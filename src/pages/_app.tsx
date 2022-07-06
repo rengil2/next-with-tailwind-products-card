@@ -1,9 +1,16 @@
-import type { AppProps } from 'next/app';
+// _app.jsx
+import React from "react";
+import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
+import "../global.css";
 
-import '../global.css';
+export default function MyApp({ Component, pageProps }: any) {
+  const [queryClient] = React.useState(() => new QueryClient());
 
-const QogitaApp = ({ Component, pageProps }: AppProps): JSX.Element => (
-  <Component {...pageProps} />
-);
-
-export default QogitaApp;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Hydrate state={pageProps.dehydratedState}>
+        <Component {...pageProps} />
+      </Hydrate>
+    </QueryClientProvider>
+  );
+}
