@@ -5,10 +5,11 @@ import { productFixture } from "./product-fixture";
 const products = [productFixture] as Product[];
 
 it("finds", () => {
-  expect(getProductForId("id-found", products)).toEqual({
+  expect(getProductForId("gtin", products)).toEqual({
     brandName: "some-brand",
     categoryName: "some-category-name",
-    id: "id-found",
+    id: "gtin",
+    gtin: "gtin",
     imageUrl: "wwww.google.com.br",
     name: "name",
     recommendedRetailPrice: 10,
