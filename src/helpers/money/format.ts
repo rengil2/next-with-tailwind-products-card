@@ -4,7 +4,7 @@ const getFormatMoney = (currency = "EUR") =>
   new Intl.NumberFormat("de", {
     style: "currency",
     currency: "EUR",
-    maximumSignificantDigits: 3,
+    maximumSignificantDigits: 4,
   });
 
 export const formatForCurrency = (currency: string, value: number) => {
