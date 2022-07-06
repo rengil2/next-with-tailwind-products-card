@@ -6,6 +6,7 @@ import {
 import { Product } from "../index";
 import {
   getForId,
+  useProductForCartQuery,
   useProductListQuery,
 } from "../../features/product/queries/use-product-list-query";
 import { ProductCard } from "../../features/product/product-card";
@@ -21,13 +22,13 @@ export const ProductList: React.FC<{
 const formatter = new Intl.NumberFormat("de", {
   style: "currency",
   currency: "EUR",
-  maximumSignificantDigits: 2,
+  maximumSignificantDigits: 3,
 });
 
 const CartPage = () => {
-  const productListQuery = useProductListQuery();
   const [productById] = useCartStore((state) => [state.productById]);
   const productIds = Object.keys(productById);
+  const productListQuery = useProductForCartQuery(productIds);
 
   if (productListQuery.isLoading || !productListQuery.data) {
     return null;
@@ -37,15 +38,17 @@ const CartPage = () => {
     .map((id) => getForId(id, productListQuery.data.products))
     .filter((p) => !!p?.id) as Product[];
 
-  const totalValue = products.map(
-    (p) => p.recommendedRetailPrice * (productById[p.id] || 0)
+  const totalValue = products.reduce(
+    (total, product) =>
+      total + (product.recommendedRetailPrice * productById[product.id] || 0),
+    0
   ) as unknown as number;
 
   const formattedTotalValue = formatter.format(totalValue);
   return (
     <Layout>
       <h1>Cart</h1>
-      {totalValue > 0 ? <h2>Total to Pay {formattedTotalValue}</h2> : null}
+      <h2>Total to Pay {formattedTotalValue}</h2>
       <ProductList
         products={products}
         renderItem={(product: Product) => (

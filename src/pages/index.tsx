@@ -50,7 +50,9 @@ const HomePage = () => {
     state.productById,
     state.dispatch,
   ]);
+
   const query = useProductListQuery();
+
   if (query.isLoading) {
     return <LoadingState />;
   }
@@ -62,39 +64,56 @@ const HomePage = () => {
   return (
     <Layout>
       <h1>Products</h1>
-      <ProductList
-        products={query.data.products}
-        renderItem={(product: Product) => (
-          <ProductCard
-            as="li"
-            key={product.gtin}
-            product={product}
-            renderFooter={() => {
-              if (productsById[product.id] && product.id) {
-                return (
-                  <ProductQuantityControl
-                    quantity={productsById[product.id]}
-                    productId={product.id}
-                  />
-                );
-              }
-              return (
-                <button
-                  className="bg-purple-500 text-white py-3 px-8 rounded-md"
-                  onClick={() =>
-                    dispatch({
-                      type: useCartStoreTypes.addToCart,
-                      payload: { productId: product.id },
-                    })
-                  }
-                >
-                  Add To Cart
-                </button>
-              );
-            }}
-          />
-        )}
-      />
+      {query.data.pages.map((group) => {
+        return (
+          <div className="my-4">
+            <ProductList
+              key={group.nextPage}
+              products={group.products}
+              renderItem={(product: Product) => (
+                <ProductCard
+                  as="li"
+                  key={product.gtin}
+                  product={product}
+                  renderFooter={() => {
+                    if (productsById[product.id] && product.id) {
+                      return (
+                        <ProductQuantityControl
+                          quantity={productsById[product.id]}
+                          productId={product.id}
+                        />
+                      );
+                    }
+                    return (
+                      <button
+                        className="bg-purple-500 text-white py-3 px-8 rounded-md"
+                        onClick={() =>
+                          dispatch({
+                            type: useCartStoreTypes.addToCart,
+                            payload: { productId: product.id },
+                          })
+                        }
+                      >
+                        Add To Cart
+                      </button>
+                    );
+                  }}
+                />
+              )}
+            />
+          </div>
+        );
+      })}
+      {query.hasNextPage ? (
+        <div className="flex justify-center items-center mt-4">
+          <button
+            className="bg-purple-500 text-white py-3 px-8 rounded-md "
+            onClick={() => query.fetchNextPage()}
+          >
+            Fetch more
+          </button>
+        </div>
+      ) : null}
     </Layout>
   );
 };

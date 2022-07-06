@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useInfiniteQuery, useQuery } from "react-query";
 import { Product, ProductFromApi } from "../../../pages";
 import produce from "immer";
 
@@ -28,11 +28,41 @@ export const getForId = (id: string, products: Product[]): Product | null => {
 };
 
 export const useProductListQuery = () => {
-  return useQuery("products", async () => {
-    const result = await fetch("api/products");
+  const fetchProducts = async ({ pageParam = 1 }) => {
+    const result = await fetch("api/products?page=" + pageParam);
     const data = await result.json();
+    debugger;
     return {
       products: data.results.map(mapToProduct),
+      nextPage: data.count > data.page * 20 ? data.page + 1 : undefined,
     };
+  };
+
+  return useInfiniteQuery("products", fetchProducts, {
+    getNextPageParam: (lastPage, pages) => {
+      return lastPage.nextPage;
+    },
   });
+};
+
+const fetchProducts = async (productIds: string[]) => {
+  const products = [] as Product[];
+  const fetchAll = async () => {
+    for (const productId of productIds) {
+      const result = await fetch("api/products/" + productId);
+      const data = await result.json();
+      products.push(mapToProduct(data));
+    }
+  };
+
+  await fetchAll();
+  return {
+    products,
+  };
+};
+
+export const useProductForCartQuery = (productIds: string[]) => {
+  return useQuery(["product", productIds.toString()], () =>
+    fetchProducts(productIds)
+  );
 };
