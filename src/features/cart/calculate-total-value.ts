@@ -4,10 +4,12 @@ import { Product } from "../product/interface";
 export const calculateTotalValue = (
   products: Product[],
   getQuantityForProduct: (productId: string) => number
-) =>
-  products.reduce(
+) => {
+  if (!products) return 0;
+  return products.reduce(
     (total, product) =>
       total +
       getProductPrice(product) * (getQuantityForProduct(product.id) || 0),
     0
   );
+};

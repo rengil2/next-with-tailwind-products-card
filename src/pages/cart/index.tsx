@@ -32,28 +32,27 @@ const CartPage = () => {
   return (
     <Layout>
       <h1>Cart</h1>
-      <h2>{formatForCurrency(getProductCurrency(products[0]), totalValue)}</h2>
+      <h2>{`Total To Pay ${formatForCurrency(
+        getProductCurrency(products[0]),
+        totalValue
+      )}`}</h2>
       <ProductList
         products={products}
         renderItem={(product: Product) => (
-          <div className="flex flex-row w-[40rem] max-w-[400px]">
-            <div className="w-[40rem] max-w-[400px]">
-              <ProductCard
-                as="li"
-                key={product.gtin}
-                product={product}
-                renderFooter={() => {
-                  if (!product.id) return null;
-                  return (
-                    <ProductQuantityControl
-                      quantity={productById[product.id]}
-                      productId={product.id}
-                    />
-                  );
-                }}
-              />
-            </div>
-          </div>
+          <ProductCard
+            as="li"
+            key={product.gtin}
+            product={product}
+            renderFooter={() => {
+              if (!product.id) return null;
+              return (
+                <ProductQuantityControl
+                  quantity={productById[product.id]}
+                  productId={product.id}
+                />
+              );
+            }}
+          />
         )}
       />
     </Layout>
