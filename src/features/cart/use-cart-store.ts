@@ -13,7 +13,7 @@ interface State {
 }
 type DispatchType = { type: useCartStoreTypes; payload: { productId: string } };
 
-const reducer = (state: State, { type, payload }: DispatchType) => {
+export const reducer = (state: State, { type, payload }: DispatchType) => {
   switch (type) {
     case useCartStoreTypes.addToCart:
       return produce(state, (draft) => {
