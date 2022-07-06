@@ -1,49 +1,18 @@
-import Layout from "../components/Layout";
-import Image from "next/image";
-
+import Layout from "../components/layout";
 import {
   useCartStore,
   useCartStoreTypes,
 } from "../features/cart/use-cart-store";
-import { useProductListQuery } from "../features/product/queries/use-product-list-query";
-import { ProductCard } from "../features/product/product-card";
-import { ProductQuantityControl } from "../features/product/product-quantity-control";
-
-const LoadingState = () => <div>Loading</div>;
-const ErrorState = () => <div>Error</div>;
-
-export interface ProductFromApi {
-  name: string;
-  gtin: string;
-  recommendedRetailPrice: number;
-  recommendedRetailPriceCurrency: string;
-  imageUrl: string;
-  brandName: string;
-  categoryName: string;
-}
-
-export interface Product {
-  name: string;
-  gtin: string;
-  recommendedRetailPrice: number;
-  recommendedRetailPriceCurrency: string;
-  imageUrl: string;
-  brandName: string;
-  categoryName: string;
-  id?: string;
-  error?: string;
-}
-
-export const ProductList: React.FC<{
-  products: Product[];
-  renderItem: (product: Product) => React.ReactNode;
-}> = ({ renderItem, products }) => {
-  return (
-    <ul className="grid-rows-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-full col-span-full">
-      {products.map(renderItem)}
-    </ul>
-  );
-};
+import { ProductCard } from "../components/product/product-card";
+import { ProductQuantityControl } from "../components/product/product-quantity-control";
+import { productQueries } from "../features/product/queries";
+import { Product } from "../features/product/interface";
+import { ProductList } from "../components/product/product-list";
+import {
+  ErrorState,
+  LoadingState,
+} from "../components/product/loading-empty-state";
+import { PrimaryButton } from "../components/button/primary-button";
 
 const HomePage = () => {
   const [productsById, dispatch] = useCartStore((state) => [
@@ -51,24 +20,23 @@ const HomePage = () => {
     state.dispatch,
   ]);
 
-  const query = useProductListQuery();
+  const paginatedListQuery = productQueries.useFetchPaginatedQuery();
 
-  if (query.isLoading) {
+  if (paginatedListQuery.isLoading) {
     return <LoadingState />;
   }
 
-  if (query.error || !query.data) {
+  if (paginatedListQuery.error || !paginatedListQuery.data) {
     return <ErrorState />;
   }
 
   return (
     <Layout>
       <h1>Products</h1>
-      {query.data.pages.map((group) => {
+      {paginatedListQuery.data.pages.map((group) => {
         return (
-          <div className="my-4">
+          <div key={group.nextPage} className="my-4">
             <ProductList
-              key={group.nextPage}
               products={group.products}
               renderItem={(product: Product) => (
                 <ProductCard
@@ -85,8 +53,7 @@ const HomePage = () => {
                       );
                     }
                     return (
-                      <button
-                        className="bg-purple-500 text-white py-3 px-8 rounded-md"
+                      <PrimaryButton
                         onClick={() =>
                           dispatch({
                             type: useCartStoreTypes.addToCart,
@@ -95,7 +62,7 @@ const HomePage = () => {
                         }
                       >
                         Add To Cart
-                      </button>
+                      </PrimaryButton>
                     );
                   }}
                 />
@@ -104,14 +71,11 @@ const HomePage = () => {
           </div>
         );
       })}
-      {query.hasNextPage ? (
+      {paginatedListQuery.hasNextPage ? (
         <div className="flex justify-center items-center mt-4">
-          <button
-            className="bg-purple-500 text-white py-3 px-8 rounded-md "
-            onClick={() => query.fetchNextPage()}
-          >
+          <PrimaryButton onClick={() => paginatedListQuery.fetchNextPage()}>
             Fetch more
-          </button>
+          </PrimaryButton>
         </div>
       ) : null}
     </Layout>

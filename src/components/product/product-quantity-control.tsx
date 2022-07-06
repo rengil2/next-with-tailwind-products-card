@@ -1,10 +1,12 @@
 import {
-  ProductId,
-  ProductQuantity,
   useCartStore,
   useCartStoreTypes,
-} from "../cart/use-cart-store";
-import clsx from "clsx";
+} from "../../features/cart/use-cart-store";
+import {
+  PrimaryButton,
+  PrimaryButtonWithAlertOption,
+} from "../button/primary-button";
+import { ProductId, ProductQuantity } from "../../features/product/interface";
 
 export const ProductQuantityControl: React.FC<{
   quantity: ProductQuantity;
@@ -12,8 +14,7 @@ export const ProductQuantityControl: React.FC<{
 }> = ({ quantity, productId }) => {
   const dispatch = useCartStore((state) => state.dispatch);
 
-  const isDelete = Number(quantity) <= 1;
-  const isDecrement = !isDelete;
+  const hasOneElement = Number(quantity) <= 1;
 
   return (
     <div className="flex flex-col">
@@ -22,35 +23,29 @@ export const ProductQuantityControl: React.FC<{
         <p>{quantity}</p>
       </div>
       <div className="flex flex-1 flex-row gap-2 my-2">
-        <button
-          className={clsx(
-            "text-white py-3 rounded-md flex flex-1 justify-center",
-            {
-              "bg-purple-500": isDecrement,
-              "bg-red-500": isDelete,
-            }
-          )}
+        <PrimaryButtonWithAlertOption
+          isAlert={hasOneElement}
           onClick={() =>
             dispatch({
               type: useCartStoreTypes.decrement,
-              payload: { productId: productId },
+              payload: { productId },
             })
           }
         >
-          {Number(quantity) <= 1 ? "Remove" : "-"}
-        </button>
+          {hasOneElement ? "Remove" : "-"}
+        </PrimaryButtonWithAlertOption>
 
-        <button
+        <PrimaryButton
           className="bg-purple-500 text-white py-3 rounded-md flex flex-1 justify-center"
           onClick={() =>
             dispatch({
               type: useCartStoreTypes.increment,
-              payload: { productId: productId },
+              payload: { productId },
             })
           }
         >
           +
-        </button>
+        </PrimaryButton>
       </div>
     </div>
   );

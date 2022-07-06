@@ -8,13 +8,12 @@ export enum useCartStoreTypes {
   decrement = "DECREMENT",
 }
 
-export type ProductQuantity = string;
-export type ProductId = string;
+interface State {
+  productById: Record<string, number>;
+}
+type DispatchType = { type: useCartStoreTypes; payload: { productId: string } };
 
-const reducer = (
-  state: Record<string, number>,
-  { type, payload }: { type: useCartStoreTypes; payload: { productId: string } }
-) => {
+const reducer = (state: State, { type, payload }: DispatchType) => {
   switch (type) {
     case useCartStoreTypes.addToCart:
       return produce(state, (draft) => {
@@ -37,11 +36,17 @@ const reducer = (
   }
 };
 
-export const useCartStore = create(
+export const useCartStore = create<
+  {
+    productById: Record<string, number>;
+    dispatch: (action: DispatchType) => void;
+  },
+  [["zustand/persist", { siteId: string; email: string; siteUrl: string }]]
+>(
   persist(
     (set) => ({
       productById: {},
-      dispatch: (args: any) => set((state) => reducer(state, args)),
+      dispatch: (args: any) => set((state: State) => reducer(state, args)),
     }),
     {
       name: "cart-storage",
