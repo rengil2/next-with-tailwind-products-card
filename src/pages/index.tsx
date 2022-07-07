@@ -54,6 +54,7 @@ const HomePage = () => {
                     }
                     return (
                       <PrimaryButton
+                        data-testid={`add-to-cart-button-${product.id}`}
                         onClick={() =>
                           dispatch({
                             type: useCartStoreTypes.addToCart,

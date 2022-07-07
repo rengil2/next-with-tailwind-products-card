@@ -24,6 +24,11 @@ export const ProductQuantityControl: React.FC<{
       </div>
       <div className="flex flex-1 flex-row gap-2 my-2">
         <PrimaryButtonWithAlertOption
+          data-testid={
+            hasOneElement
+              ? `product-quantity-control--remove-${productId}`
+              : `product-quantity-control--decrement-${productId}`
+          }
           isAlert={hasOneElement}
           onClick={() =>
             dispatch({
@@ -36,6 +41,7 @@ export const ProductQuantityControl: React.FC<{
         </PrimaryButtonWithAlertOption>
 
         <PrimaryButton
+          data-testid={`product-quantity-control--increment-${productId}`}
           className="bg-purple-500 text-white py-3 rounded-md flex flex-1 justify-center"
           onClick={() =>
             dispatch({

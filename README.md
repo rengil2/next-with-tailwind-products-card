@@ -76,3 +76,18 @@ The `/products` endpoint accepts `GET` requests and will return the first page o
 #### `/products/[gtin]`
 
 The `/products/[gtin]` endpoint accepts `GET` requests and will return a product matching the GTIN (e.g. `/products/8005610625720`). If no product is found, the API will respond with a `404` status.
+
+
+
+First all, thanks for the opportunity.
+For doing the challenge I used react-query for the data fetching and zustand for the 
+state management. 
+Using the power of react-query we can use the cache the requests and with zustand we can create a store for the cart
+
+
+## Next steps
+1. Replace all strings with i18n
+2. Test components using react-test-library and divide them better using atomic design
+3. The cart do too many requests now, I would love to have an api that I can pass a bunch of ids and get all the product
+4. Better empty and loading state
+5. Double check if everything accessibility wise is good enough. Now you can do all the remove, increment and decrement just with the keyboard and all the actions are made via button

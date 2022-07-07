@@ -5,7 +5,6 @@ export const useFetchPaginatedQuery = () => {
   const fetchProducts = async ({ pageParam = 1 }) => {
     const result = await fetch("api/products?page=" + pageParam);
     const data = await result.json();
-    debugger;
     return {
       products: data.results.map(mapFromApiToProduct),
       nextPage: data.count > data.page * 20 ? data.page + 1 : undefined,
