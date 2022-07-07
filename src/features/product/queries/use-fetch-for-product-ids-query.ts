@@ -19,7 +19,12 @@ const apiCall = async (productIds: string[]) => {
 };
 
 export const useFetchForProductIdsQuery = (productIds: string[]) => {
-  return useQuery(["product", productIds.toString()], () =>
-    apiCall(productIds)
+  return useQuery(
+    ["useFetchForProductIdsQuery"],
+    async () => await apiCall(productIds),
+    {
+      refetchOnWindowFocus: false,
+      staleTime: 10000,
+    }
   );
 };

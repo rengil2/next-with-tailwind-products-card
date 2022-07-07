@@ -12,7 +12,7 @@ export const useFetchPaginatedQuery = () => {
     };
   };
 
-  return useInfiniteQuery("products", fetchProducts, {
+  return useInfiniteQuery("useFetchPaginatedQuery", fetchProducts, {
     getNextPageParam: (lastPage, pages) => {
       return lastPage.nextPage;
     },
