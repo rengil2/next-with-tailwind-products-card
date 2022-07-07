@@ -1,10 +1,11 @@
-## Run Dev
+## Starting the development
+
 ```
  npm i
  npm run dev
 ```
 
-## Run Production
+## Run production
 ```
  npm i
  npm run start
