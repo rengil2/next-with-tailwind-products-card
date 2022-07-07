@@ -96,6 +96,12 @@ All the content is saved in the sessionStorage.
 
 I implemented some tests you can run using `npm run test` or `npm e2e` 
 
+## Assumptions made 
+1. All products will have the same currency. This way it make the scope a bit smaller.
+2. The cart approach to fetch all the data is not ideal. I could either fetch all the pages or fetch one by one. 
+3. If the product in the cart no longer exist, we just ignore it. It will be in the cart, but it won't be showing to the user.
+This can be removed when the user checks out the cart or can be done as well in the backend.
+
 ## Folder structure
 ```
   components
