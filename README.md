@@ -79,15 +79,36 @@ The `/products/[gtin]` endpoint accepts `GET` requests and will return a product
 
 
 
+# Author
+
 First all, thanks for the opportunity.
 For doing the challenge I used react-query for the data fetching and zustand for the 
-state management. 
-Using the power of react-query we can use the cache the requests and with zustand we can create a store for the cart
+state management. I also used immer for changing states of objects without mutating.
+
+For the pagination I used react query's infiniteQuery that already has some helpers
+that make the infinite scroll easier.
+
+The store reducer controls what happens when for given productId, when we increment, decrement.
+If we decrement when the quantity is 1, I remove the product.
+
+All the content is saved in the sessionStorage.
 
 
+I implemented some tests you can run using `npm run test` or `npm e2e` 
+
+## Folder structure
+```
+  components
+    reusable or domain specific components
+  features
+    hooks, queries and helpers associated to the product.
+  helpers
+    General helpers that are not related to any feature in particular. Like money and images.
+```
 ## Next steps
 1. Replace all strings with i18n
 2. Test components using react-test-library and divide them better using atomic design
 3. The cart do too many requests now, I would love to have an api that I can pass a bunch of ids and get all the product
 4. Better empty and loading state
 5. Double check if everything accessibility wise is good enough. Now you can do all the remove, increment and decrement just with the keyboard and all the actions are made via button
+6. For the components, add a storybook
